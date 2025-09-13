@@ -8,7 +8,7 @@ import {
   ManyToOne
 } from 'typeorm';
 import {Category} from 'src/categories/entities/category.entity'
-import { User } from 'src/users/entities/user.entity';
+
 export enum ProductRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
@@ -38,9 +38,8 @@ export class Product {
   updatedAt: Date;
 
 
-  
-  @ManyToOne(() => User, (user) => user.products)
-  user: User;
+
+ 
 
 
 
