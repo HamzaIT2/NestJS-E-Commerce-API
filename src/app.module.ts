@@ -5,23 +5,25 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5432,
+      port: 3000,
       username: 'postgres',
-      password: '12345',
-      database: 'ecommerce_nest_db',
+      password: 'root',
+      database: 'ecommers-Nset-js',
       autoLoadEntities: true,
       synchronize: true,
     }),
     UsersModule,
     CategoriesModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

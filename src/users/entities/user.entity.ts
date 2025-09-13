@@ -3,9 +3,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
   CreateDateColumn,
 } from 'typeorm';
-
+import { Product } from 'src/product/entities/product.entity';
 export enum UserRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
@@ -34,4 +35,8 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+    @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
+
 }

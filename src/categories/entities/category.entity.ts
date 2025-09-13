@@ -3,9 +3,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+   OneToMany,
   CreateDateColumn,
 } from 'typeorm';
-
+import {Product} from 'src/product/entities/product.entity'
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
@@ -19,4 +20,10 @@ export class Category {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+
+
+  
+    @OneToMany(()=>Product,(product)=>product.category)
+    product:Product[]
 }
