@@ -21,9 +21,10 @@ export class Category {
   @UpdateDateColumn()
   updatedAt: Date;
 
-
-
   
-    @OneToMany(()=>Product,(product)=>product.category)
-    product:Product[]
+    @Column({ type: 'text', nullable: true })
+  image: string | null;
+  
+  @OneToMany(()=>Product,(product)=>product.category)
+  product:Product[]
 }

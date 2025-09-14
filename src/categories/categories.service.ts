@@ -16,7 +16,22 @@ export class CategoriesService {
   ) {}
 
   // 1-create()
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(createCategoryDto: CreateCategoryDto,
+    
+    
+    
+    // add tody
+
+
+
+
+    image?:Express.Multer.File,
+
+
+
+
+
+  ): Promise<Category> {
     const { name } = createCategoryDto;
     const existingCategory = await this.categoryRepository.findOne({
       where: { name: name },
@@ -27,7 +42,12 @@ export class CategoriesService {
 
     const category = this.categoryRepository.create({
       name: name,
+      image: `/uploads/categories/${image ? image.filename : ''}`,
+
+
+
     });
+
     return this.categoryRepository.save(category);
   }
 

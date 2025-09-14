@@ -19,5 +19,7 @@ export class CreateProductDto {
   @IsInt()
   stock:number;
 
+  
+
 
 }

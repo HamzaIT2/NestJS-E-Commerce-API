@@ -4,10 +4,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
-  
-  ManyToOne
+
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
-import {Category} from 'src/categories/entities/category.entity'
+import { Category } from 'src/categories/entities/category.entity'
 
 export enum ProductRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
@@ -25,11 +26,11 @@ export class Product {
 
 
   @Column('int')
-  price:number;
+  price: number;
 
 
   @Column('int')
-  stock:number;
+  stock: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -39,12 +40,15 @@ export class Product {
 
 
 
- 
+  @Column({ name: 'category_id', nullable: true })
+  categoryId: number | null;
 
 
 
 
 
-  @ManyToOne(()=>Category,(category)=>category.product)
-  category:Category[]
+
+  @ManyToOne(() => Category, (category) => category.product, { eager: true, onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'category_id' })
+  category: Category | null;
 }

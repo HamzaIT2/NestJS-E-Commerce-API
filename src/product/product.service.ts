@@ -7,17 +7,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-  ) {}
+    private readonly categoryService: CategoriesService,
+  ) { }
 
   // 1- create()
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const { name, price, stock } = createProductDto;
+
+
+    const category = await this.categoryService.findAll()
 
     // تحقق إذا المنتج موجود مسبقًا بنفس الاسم
     const existingProduct = await this.productRepository.findOne({

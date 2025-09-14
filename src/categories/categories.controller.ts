@@ -7,10 +7,20 @@ import {
   Delete,
   Put,
   Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoriesService } from './categories.service';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { Max } from 'class-validator';
 
 @Controller('categories')
 export class CategoriesController {
@@ -18,8 +28,40 @@ export class CategoriesController {
 
   // 1- create()
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/categories',
+        filename: (req, file, callback) => {
+          const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `${uniqueName}${ext}`);
+        },
+      }),
+    }),
+  )
+  async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+
+
+    //  add today
+
+
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    image?: Express.Multer.File,
+
+
+
+    
+  ) {
+    return this.categoriesService.create(createCategoryDto,image);
   }
 
   // 2- findAll()
@@ -50,5 +92,21 @@ export class CategoriesController {
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return this.categoriesService.remove(id);
+  }
+
+  // 6- جديد: إيجاد category مع products
+  // GET /categories/:id/products
+  // http://localhost:3000/categories/1/products?offset=0&limit=10
+  // http://localhost:3000/categories/1/products
+  // http://localhost:3000/categories/1/products?offset=5&limit=5
+  // http://localhost:3000/categories/1/products?offset=10&limit=5
+  // http://localhost:3000/categories/1/products?offset=15&limit=5
+  @Get(':id/products')
+  async findOneWithProducts(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number = 0,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    return this.categoriesService.findOne(id);
   }
 }
