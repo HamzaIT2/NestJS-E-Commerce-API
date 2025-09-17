@@ -46,8 +46,8 @@ export class Product {
 
 
 
-  @OneToMany(() => ProductImages, (ProductImage) => ProductImage.product)
-  ProductImages: ProductImages[];
+  @OneToMany(() => ProductImages, image => image.product)
+  images: ProductImages[];
 
 
   @ManyToOne(() => Category, (category) => category.product, { eager: true, onDelete: 'SET NULL', nullable: true })

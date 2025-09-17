@@ -15,7 +15,7 @@ export class ProductService {
     const product = await this.productRepository.findOne({
       where : {id:productId},
 
-      relations:['ProductImage','category'],
+      relations:['images','category'],
     });
 
     if(!product){

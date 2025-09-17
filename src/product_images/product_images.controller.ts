@@ -1,4 +1,4 @@
-import{
+import {
     Controller,
     Get,
     Post,
@@ -12,32 +12,38 @@ import{
     ParseFilePipe,
     MaxFileSizeValidator,
     Patch,
-}from '@nestjs/common'
-import {CreateProductImagesDto} from './dto/create-product_images.dto'
-import {ProductImagesService}from './product_images.service'
+} from '@nestjs/common'
+import { CreateProductImagesDto } from './dto/create-product_images.dto'
+import { ProductImagesService } from './product_images.service'
 import { diskStorage } from "multer";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { UpdateProductImageDto } from './dto/update-product_images.dto';
 
 @Controller('product-images')
-export class ProductImagesController { 
-    constructor(private readonly productImageService: ProductImagesService){}
+export class ProductImagesController {
+    constructor(private readonly productImageService: ProductImagesService) { }
 
 
 
 
-//     @Post()
-//     async createProductImage(@Body() createDto: CreateProductImagesDto) {
-//     return this.productImageService.createProductImage(createDto);
-//   }
+    //     @Post()
+    //     async createProductImage(@Body() createDto: CreateProductImagesDto) {
+    //     return this.productImageService.createProductImage(createDto);
+    //   }
 
 
 
     @Post('upload')
     @UseInterceptors(FilesInterceptor('images', 10, {
         storage: diskStorage({
-            destination: './uploads/productImages', 
+
+            destination: (req, file, cb) => {
+                cb(null, join(__dirname, '..', '..', 'uploads', 'productImages'));
+            },
+
+
+
             filename: (req, file, callback) => {
                 const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9);
                 const ext = extname(file.originalname);
@@ -54,7 +60,7 @@ export class ProductImagesController {
         @Body() createProductImageDto: CreateProductImagesDto,
         @UploadedFiles(
             new ParseFilePipe({
-                validators: [new MaxFileSizeValidator({maxSize: 5*1024*1024})],
+                validators: [new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 })],
                 fileIsRequired: true,
             }),
         ) images: Express.Multer.File[],
@@ -68,26 +74,26 @@ export class ProductImagesController {
 
     @Get()
     async findAll(
-        @Query('page') page?:number,
-        @Query('offset')offset?:number ,
-        @Query('limit')limit?:number ,
-        @Query('productId') productId? : number,
-        @Query('isPrimary') isPrimary? : boolean,
+        @Query('page') page?: number,
+        @Query('offset') offset?: number,
+        @Query('limit') limit?: number,
+        @Query('productId') productId?: number,
+        @Query('isPrimary') isPrimary?: boolean,
 
-    ){
-        return this.productImageService.getAll(offset,limit,productId,isPrimary);
+    ) {
+        return this.productImageService.getAll(offset, limit, productId, isPrimary);
     }
 
     // findOne()
 
     @Get(':id')
-    async getOne(@Param('id') id : number){
+    async getOne(@Param('id') id: number) {
         return this.productImageService.getOne(id);
     }
 
 
     @Get('product/:productId')
-    async getByProductId(@Param('productId')productId:number){
+    async getByProductId(@Param('productId') productId: number) {
         return this.productImageService.getByProductId(productId)
     }
 
@@ -99,13 +105,13 @@ export class ProductImagesController {
     async update(
         @Body() updateProductImageDto: UpdateProductImageDto,
         @Param('id') id: number) {
-           return this.productImageService.update(id, updateProductImageDto)
+        return this.productImageService.update(id, updateProductImageDto)
     }
 
     //remove 
 
     @Delete(':id')
-    async remove(@Param('id') id : number){
+    async remove(@Param('id') id: number) {
         return this.productImageService.remove(id)
     }
 
