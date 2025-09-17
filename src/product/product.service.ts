@@ -11,8 +11,17 @@ import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductService {
-  getOne(productId: number) {
-      throw new Error("Method not implemented.");
+  async  getOne(productId: number) :Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where : {id:productId},
+
+      relations:['ProductImage','category'],
+    });
+
+    if(!product){
+      throw new NotFoundException(`Product with Id ${productId} not found`)
+    }
+    return product
   }
   constructor(
     @InjectRepository(Product)

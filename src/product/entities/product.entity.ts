@@ -46,14 +46,14 @@ export class Product {
 
 
 
-
+  @OneToMany(() => ProductImages, (ProductImage) => ProductImage.product)
+  ProductImages: ProductImages[];
 
 
   @ManyToOne(() => Category, (category) => category.product, { eager: true, onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'category_id' })
   category: Category | null;
-    productImages: any;
+  productImages: any;
 
-    @OneToMany(() => ProductImages, productImage => productImage.product)
-    ProductImages: ProductImages[];
+
 }
