@@ -6,6 +6,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductModule } from './product/product.module';
+import { ProductImageModule } from './product_images/product_images.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { ProductModule } from './product/product.module';
     UsersModule,
     CategoriesModule,
     ProductModule,
+    ProductImageModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  // controllers: [AppController],
+  // providers: [AppService],
 })
 export class AppModule { }

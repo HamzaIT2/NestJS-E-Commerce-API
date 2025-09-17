@@ -6,10 +6,11 @@ import {
   CreateDateColumn,
 
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from 'typeorm';
 import { Category } from 'src/categories/entities/category.entity'
-
+import { ProductImages } from 'src/product_images/entities/product_images.entities';
 export enum ProductRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
@@ -51,4 +52,8 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.product, { eager: true, onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'category_id' })
   category: Category | null;
+    productImages: any;
+
+    @OneToMany(() => ProductImages, productImage => productImage.product)
+    ProductImages: ProductImages[];
 }

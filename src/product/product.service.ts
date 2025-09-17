@@ -11,6 +11,9 @@ import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductService {
+  getOne(productId: number) {
+      throw new Error("Method not implemented.");
+  }
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -29,7 +32,7 @@ export class ProductService {
       where: { name },
     });
     if (existingProduct) {
-      throw new ConflictException('Product already exists');
+      throw new ConflictException(`Product: ${name} already exists`);
     }
 
     const product = this.productRepository.create({
