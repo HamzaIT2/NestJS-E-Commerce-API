@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductModule } from './product/product.module';
 import { ProductImageModule } from './product_images/product_images.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ProductImageModule } from './product_images/product_images.module';
     UsersModule,
     CategoriesModule,
     ProductModule,
-    ProductImageModule
+    ProductImageModule,
+    AuthModule,
   ],
   // controllers: [AppController],
   // providers: [AppService],

@@ -11,6 +11,20 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { email } });
+  }
+  async getById(userId: number): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { id: userId } });
+  }
+  async updatePassword(userId: number, hashedNewPassword: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+    user.password = hashedNewPassword;
+    return this.userRepository.save(user);
+  }
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -61,7 +75,7 @@ export class UsersService {
   }
 
   // 4-update()
-  async update(id: number, updateData: Partial<CreateUserDto>): Promise<User> {
+  async update(id: number, updateData: Partial<CreateUserDto>): Promise<User|null> {
     const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -84,9 +98,72 @@ export class UsersService {
   }
 
   // 5-remove()
+  // async remove(id: number): Promise<{ message: string }> {
+  //   const user = await this.findOne({where:{id}});
+  //   await this.userRepository.remove(user);
+  //   return { message: 'User deleted successfully' };
+  
+  // }
+
   async remove(id: number): Promise<{ message: string }> {
-    const user = await this.findOne(id);
-    await this.userRepository.remove(user);
-    return { message: 'User deleted successfully' };
+  const user = await this.userRepository.findOne({ where: { id } });
+
+  if (!user) {
+    throw new NotFoundException(`User with id ${id} not found`);
   }
+
+  await this.userRepository.remove(user);
+
+  return { message: 'User deleted successfully' };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /// Add these Methods to your existing UserService
+
+  async findById(id: number) : Promise<User | null >{
+    return await this.userRepository.findOne({
+      where:{id}
+    })
+  }
+
+  async findByEmailN(email:string): Promise<User|null>{
+    return await this.userRepository.findOne({
+
+      where:{email}
+    })
+  }
+
+async updatePasswordP(id:number,password:string):Promise<User|null>{
+  const user = await this.userRepository.findOne({
+    where:{id}
+  });
+  if(!user){
+    throw new Error("User not found!")
+  }
+  user.password = password;
+  return this.userRepository.save(user)
+}
+
+
+
+
+
+
+
+
+
+
+
 }
